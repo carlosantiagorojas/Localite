@@ -20,7 +20,7 @@ class RegistroActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        bindingTopBarGoback.GoBack.setOnClickListener(){
+        binding.includeTopBar.GoBack.setOnClickListener(){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
