@@ -18,5 +18,10 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, PerfilActivity::class.java)
             startActivity(intent)
         }
+
+        binding.btnDescubrir.setOnClickListener {
+            val intent = Intent(this, DestinoActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

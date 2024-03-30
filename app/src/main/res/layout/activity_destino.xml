@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DestinoActivity"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include_top_bar"
+        layout="@layout/destino_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/include_bottom_bar"
+        android:layout_below="@id/include_top_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/cerroMonserrate"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:srcCompat="@drawable/cerro_monserrate" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:layout_below="@+id/include_top_bar">
+
+                <ImageView
+                    android:id="@+id/pinUbicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/pin_ubicacion" />
+
+                <TextView
+                    android:id="@+id/titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bogota, Colombia"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/blue_dark"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="El cerro de Monserrate es el más conocido de los cerros Orientales de Bogotá. Monserrate tiene una altitud de 3152 m y se ubica sobre la cordillera oriental" />
+
+            <Button
+                android:id="@+id/btnInfoGeneral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Informacion general"
+                android:backgroundTint="@color/orange_main"
+                android:gravity="left|center"
+                />
+            <TextView
+                android:id="@+id/infoGeneral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="8dp"
+                android:text="El cerro de Monserrate es el más conocido de los cerros Orientales de Bogotá. Junto a Guadalupe es uno de los cerros tutelares de la ciudad. Monserrate tiene una altitud de 3152 m y se ubica sobre la cordillera oriental. ​Los cerros de Bogotá, de origen sedimentario, tienen por lo menos 16 millones de años de antigüedad, con rocas de edad cretácica pertenecientes al Grupo guadalupe, en lo que se refiere al aspecto geológico. Hasta mediados del siglo xvii fue conocido como cerro de Las Nieves. La basílica del Señor de Monserrate ha sido lugar de peregrinación religiosa desde la época colonial y se constituye en un atractivo natural, religioso, gastronómico de la ciudad. Se puede ascender al cerro por el sendero peatonal, por teleférico (Aéreo) por funicular(Terrestre)." />
+
+            <Button
+                android:id="@+id/btnHistoria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Historia"
+                android:backgroundTint="@color/orange_main"
+                android:gravity="left|center"
+                />
+
+            <TextView
+                android:id="@+id/historiaUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="8dp"
+                android:text="El cerro de Monserrate, ubicado al oriente del Distrito Capital Colombiano el cual es una de las formaciones más reconocibles de la sabana de Bogotá, así como uno de los símbolos de la ciudad. Perteneciente a los cerros Orientales. El conquistador español Gonzalo Jiménez de Quesada fundó el primer asentamiento español en la región del valle de los Alcázares, en la actual  " />
+            <Button
+                android:id="@+id/btnActividades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Actividades"
+                android:backgroundTint="@color/orange_main"
+                android:gravity="left|center"
+                />
+
+            <TextView
+                android:id="@+id/tituloActividades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="8dp"
+                android:text="Las mas recomendadas"
+                android:textSize="20sp"
+                android:textColor="@color/orange_main"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/actividadesUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="8dp"
+                android:text="Visitar la Iglesia Basilica del Señor de Monserrate: Un lugar de peregrinación con una vista impresionante de Bogotá.
+Explorar el Museo del Oro: Aunque no está en el cerro mismo, está muy cerca y es una de las atracciones más famosas de Bogotá.
+Casa Museo Quinta de Bolivar: Otro sitio histórico cercano que ofrece una mirada a la vida de Simón Bolívar.
+Disfrutar de experiencias culinarias: Hay varios restaurantes y cafés en el cerro donde puedes disfrutar de la gastronomía local.
+Comprar artesanías: Hay tiendas donde puedes comprar recuerdos y artesanías locales.
+Hacer ejercicio: Muchas personas suben al cerro caminando como una forma de ejercicio, disfrutando de la naturaleza y las vistas." />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/include_bottom_bar"
+        layout="@layout/home_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

@@ -7,10 +7,7 @@
     android:background="#F1F1F1"
     tools:context=".InicioSesionActivity">
 
-    <include
-        layout="@layout/top_bar_login"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"/>
+
 
     <ImageView
         android:id="@+id/imglocalite"
@@ -20,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
         android:gravity="top"
-        android:src="@drawable/Logot"
+        android:src="@drawable/logot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.388"
         app:layout_constraintStart_toStartOf="parent"
