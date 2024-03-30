@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/imglocalite"
-        android:layout_width="348dp"
-        android:layout_height="240dp"
+        android:layout_width="363dp"
+        android:layout_height="254dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
@@ -34,82 +34,51 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="43dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="43dp"
         android:fontFamily="@font/roboto_medium"
+        android:gravity="center"
         android:text="Descubre el encanto de cada lugar"
         android:textColor="@color/orange_main"
         android:textSize="24sp"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imglocalite" />
 
-    <RelativeLayout
-        android:id="@+id/boton_register"
-        android:layout_width="240dp"
-        android:layout_height="52dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/button_background"
+    <Button
+        android:id="@+id/IniciaSesion"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="@font/roboto_bold"
+        android:text="INICIAR SESIÓN"
+
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imglocalite"
-        app:layout_constraintVertical_bias="0.519">
+        app:layout_constraintTop_toBottomOf="@+id/presentation_text"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/createA1"
-            android:layout_width="133dp"
-            android:layout_height="24dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="61dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="46dp"
-            android:layout_marginBottom="12dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="REGÍSTRATE"
-            android:textColor="#FFFFFF"
-            android:textSize="20dp" />
-    </RelativeLayout>
+    <Button
+        android:id="@+id/registrate"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="@font/roboto_bold"
+        android:text="REGISTRATE"
 
-    <RelativeLayout
-        android:id="@+id/boton_login"
-        android:layout_width="240dp"
-        android:layout_height="52dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/button_background"
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imglocalite"
-        app:layout_constraintVertical_bias="0.24">
+        app:layout_constraintTop_toBottomOf="@+id/IniciaSesion"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/login1"
-            android:layout_width="153dp"
-            android:layout_height="33dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="37dp"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="INICIA SESIÓN"
-            android:textColor="#FFFFFF"
-            android:textSize="20dp" />
-    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

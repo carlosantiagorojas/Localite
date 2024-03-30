@@ -14,8 +14,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.botonLogin.setOnClickListener(){
-            val intent = Intent(this, ActivityInicioSesion::class.java)
+        binding.IniciaSesion.setOnClickListener(){
+            val intent = Intent(this, InicioSesionActivity::class.java)
             startActivity(intent)
         }
     }

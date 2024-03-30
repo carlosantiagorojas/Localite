@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F1F1"
+    tools:context=".InicioSesionActivity">
+
+    <include
+        android:id="@+id/include2"
+        layout="@layout/top_bar_goback"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IniciaSesion"
+        tools:layout_editor_absoluteX="-16dp" />
+
+    <ImageView
+        android:id="@+id/imglocalite"
+        android:layout_width="363dp"
+        android:layout_height="254dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+        android:gravity="top"
+        android:src="@drawable/Logot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.388"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/correoLogin"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Usuario o email"
+            android:inputType="textEmailAddress"
+            android:layout_marginRight="31dp"
+            android:layout_marginLeft="31dp"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imglocalite"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:fontFamily="@font/roboto_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Contra"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="31dp"
+            android:layout_marginLeft="31dp"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            app:endIconMode="password_toggle"
+            app:layout_constraintTop_toBottomOf="@+id/correoLogin"
+           >
+            <com.google.android.material.textfield.TextInputEditText
+                android:fontFamily="@font/roboto_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/IniciaSesion"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="@font/roboto_bold"
+        android:text="INICIAR SESIÓN"
+
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Contra"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+
+        android:id="@+id/linearLayout"
+        android:layout_width="340dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="40dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IniciaSesion">
+
+        <TextView
+            android:id="@+id/a"
+            android:layout_width="79dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium"
+            android:text="¿No estas registrado?"
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/textoRegistro"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Registrate"
+            android:textColor="@color/orange_light"
+            android:textSize="17dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
