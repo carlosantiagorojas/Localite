@@ -1,20 +1,28 @@
 package com.src.localite
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.src.localite.databinding.ActivityRegistroBinding
+import com.src.localite.databinding.TopBarGobackBinding
 
 class RegistroActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityRegistroBinding
+    private lateinit var bindingTopBarGoback: TopBarGobackBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_registro)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityRegistroBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.registrate.setOnClickListener(){
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
+        bindingTopBarGoback.GoBack.setOnClickListener(){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 }
