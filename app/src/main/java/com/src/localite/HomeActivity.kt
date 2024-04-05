@@ -28,5 +28,10 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, FiltroDistanciaActivity::class.java)
             startActivity(intent)
         }
+
+        binding.btnCategorias.setOnClickListener {
+            val intent = Intent(this, FiltroCategoriaActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

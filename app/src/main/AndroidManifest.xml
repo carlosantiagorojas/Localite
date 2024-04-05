@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/localite_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/localite_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Localite"
         tools:targetApi="31">
@@ -29,6 +29,7 @@
             android:exported="false" />
 
         <activity android:name=".FiltroDistanciaActivity"/>
+        <activity android:name=".FiltroCategoriaActivity"/>
 
         <activity
             android:name=".MainActivity"

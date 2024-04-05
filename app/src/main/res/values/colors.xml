@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange_main">#FE5E3F</color>
     <color name="orange_light">#FD7F66</color>
+    <color name="orange_light_30">#4DFD7F66</color>
     <color name="blue">#139FC2</color>
     <color name="red">#EC0909</color>
     <color name="blue_dark">#11314A</color>
