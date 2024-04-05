@@ -6,4 +6,5 @@
     </style>
 
     <style name="Theme.Localite" parent="Base.Theme.Localite" />
+
 </resources>

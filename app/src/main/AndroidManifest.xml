@@ -27,6 +27,9 @@
         <activity
             android:name=".InicioSesionActivity"
             android:exported="false" />
+
+        <activity android:name=".FiltroDistanciaActivity"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

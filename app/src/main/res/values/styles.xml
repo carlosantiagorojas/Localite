@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SliderStyle" parent="Widget.MaterialComponents.Tooltip">
+        <item name="backgroundTint">@color/orange_main</item>
+    </style>
+</resources>
