@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
         android:gravity="top"
-        android:src="@drawable/logot"
+        android:src="@drawable/Logot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.388"
         app:layout_constraintStart_toStartOf="parent"

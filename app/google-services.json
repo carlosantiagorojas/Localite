@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "84668093258",
+    "project_id": "localite-48314",
+    "storage_bucket": "localite-48314.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84668093258:android:ecdf80c05e3aedfb5427b3",
+        "android_client_info": {
+          "package_name": "com.src.localite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs3_IvMMX4W2Fbi3uAeaX75vxvFBgPIGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
