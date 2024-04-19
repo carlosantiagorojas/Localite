@@ -46,12 +46,8 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-
-
         setupButtons()
         checkLocationPermission()
-
-
     }
 
     override fun onResume() {

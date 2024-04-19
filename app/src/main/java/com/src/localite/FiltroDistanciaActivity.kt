@@ -1,67 +1,95 @@
 package com.src.localite
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.slider.Slider
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.src.localite.databinding.ActivityFiltroDistanciaBinding
-import kotlin.math.abs
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class FiltroDistanciaActivity : AppCompatActivity() {
+class FiltroDistanciaActivity : AppCompatActivity(), LocationListener {
 
     private lateinit var binding: ActivityFiltroDistanciaBinding
+    private lateinit var locationManager: LocationManager
+    private lateinit var adapter: DestinoAdapter
+    private var currentLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFiltroDistanciaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val typedArray = resources.obtainTypedArray(R.array.initial_slider_values)
-        val steps = FloatArray(typedArray.length())
-        for (i in 0 until typedArray.length()) {
-            steps[i] = typedArray.getFloat(i, 0f)
-        }
-        typedArray.recycle()
+        adapter = DestinoAdapter(mutableListOf())
+        binding.recyclerViewFiltroDistancia.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewFiltroDistancia.adapter = adapter
 
-        if (steps.isNotEmpty()) {
-            binding.sliderFiltroDistancia.apply {
-                valueFrom = steps.first()
-                valueTo = steps.last()
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        checkLocationPermission()
+        loadDataFromFirebase()
+    }
 
-                addOnChangeListener(Slider.OnChangeListener { slider, value, fromUser ->
-                    if (fromUser) {
-                        val nearestValue = steps.minByOrNull { abs(value - it) } ?: value
-                        slider.value = nearestValue
-                    }
-                })
+    private fun loadDataFromFirebase() {
+        val ref = FirebaseDatabase.getInstance().getReference("Lugares")
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newDestinations = mutableListOf<Destino>()
+                snapshot.children.mapNotNullTo(newDestinations) {
+                    it.getValue(Destino::class.java)?.copy(nombre = it.key)
+                }
+                adapter.updateDestinations(newDestinations)
             }
-        }
 
-        binding.accountIconFiltroDistancia.setOnClickListener {
-            val intent = Intent(this, PerfilActivity::class.java)
-            startActivity(intent)
-        }
+            override fun onCancelled(error: DatabaseError) {
+                // Handle possible errors
+            }
+        })
+    }
 
-        binding.homeIconFiltroDistancia.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001)
+        } else {
+            startLocationUpdates()
         }
+    }
 
-        binding.izquierdaFiltroDistancia.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10f, this)
         }
+    }
 
-        //TESTING PURPOSES ONLY
+    override fun onLocationChanged(location: Location) {
+        currentLocation = location
+        // Here you would typically notify the adapter to update distances based on the new location
+    }
 
-        binding.btnDescubrirFiltroDistancia.setOnClickListener {
-            val intent = Intent(this, DestinoActivity::class.java)
-            startActivity(intent)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdates()
         }
+    }
 
-        binding.btnDescubrirFiltroDistancia2.setOnClickListener {
-            val intent = Intent(this, DestinoActivity::class.java)
-            startActivity(intent)
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdates()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        locationManager.removeUpdates(this)
     }
 }
