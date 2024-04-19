@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "84668093258",
-    "project_id": "localite-48314",
-    "storage_bucket": "localite-48314.appspot.com"
+    "project_number": "798568771062",
+    "firebase_url": "https://localite-2439c-default-rtdb.firebaseio.com",
+    "project_id": "localite-2439c",
+    "storage_bucket": "localite-2439c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84668093258:android:ecdf80c05e3aedfb5427b3",
+        "mobilesdk_app_id": "1:798568771062:android:699ae4bc47fbe656ca6bd7",
         "android_client_info": {
           "package_name": "com.src.localite"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAs3_IvMMX4W2Fbi3uAeaX75vxvFBgPIGI"
+          "current_key": "AIzaSyBpMi7dt135RH0z7nmTusXiD1vxPwkuSEs"
         }
       ],
       "services": {

@@ -16,20 +16,16 @@
         android:layout_height="80dp"
         android:layout_alignParentTop="true"/>
 
-    <!-- Nuevo LinearLayout agregado -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@+id/include_top_bar">
-
+        android:layout_below="@+id/include_top_bar"
+        android:layout_above="@+id/include_bottom_bar">
 
         <SearchView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-         >
-
-        </SearchView>
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,96 +35,35 @@
 
             <Button
                 android:id="@+id/btnCategorias"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="50"
+                android:layout_weight="1"
                 android:text="Categorias"
                 android:backgroundTint="@color/orange_light"/>
 
             <Button
                 android:id="@+id/btnCercanos"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="50"
+                android:layout_weight="1"
                 android:text="Mas cercanos"
                 android:layout_marginStart="10dp"
                 android:backgroundTint="@color/orange_light"/>
 
         </LinearLayout>
 
-        <!-- Agregando la CardView -->
-        <androidx.cardview.widget.CardView
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="#FFFF"
-            app:cardElevation="4dp">
+            android:layout_height="match_parent">
 
-            <!-- LinearLayout con orientación vertical para colocar los elementos uno debajo del otro -->
             <LinearLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <!-- ImageView para la imagen -->
-                <ImageView
-                    android:id="@+id/cerroMonserrate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="200dp"
-                    app:srcCompat="@drawable/cerro_monserrate" />
-
-                <!-- TextView para el título -->
-
-                <TextView
-                    android:id="@+id/titulo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cerro de Monserrate"
-                    android:textSize="20sp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/orange_main"/>
-
-                <TextView
-                    android:id="@+id/subtitulo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Historicos y culturales"
-                    android:textSize="15sp"
-                    android:textColor="@color/blue"/>
-
-                <TextView
-                    android:id="@+id/distancia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Distancia de 1 km para llegar"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/descripcion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="El cerro de Monserrate es el más conocido de los cerros Orientales de Bogotá. Monserrate tiene una altitud de 3152 m y se ubica sobre la cordillera oriental" />
-
-                <Button
-                    android:id="@+id/btnDescubrir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Descubrir"
-                    android:backgroundTint="@color/orange_light"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="5dp"
-                 />
-
-
+                android:orientation="vertical">
+                <!-- CardViews se añadirán aquí dinámicamente -->
             </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-
+        </ScrollView>
     </LinearLayout>
 
     <include
@@ -136,5 +71,5 @@
         layout="@layout/home_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>
