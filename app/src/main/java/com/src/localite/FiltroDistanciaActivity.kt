@@ -1,7 +1,6 @@
 package com.src.localite
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -36,24 +35,35 @@ class FiltroDistanciaActivity : AppCompatActivity(), LocationListener {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         checkLocationPermission()
         loadDataFromFirebase()
+
+        // Initialize the slider with snap functionality
+        val steps = floatArrayOf(1f, 5f, 10f, 25f, 50f, 75f, 100f)
+        binding.sliderFiltroDistancia.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser) {
+                val nearestValue = steps.minByOrNull { kotlin.math.abs(value - it) } ?: value
+                slider.value = nearestValue
+                filterDestinations(nearestValue)
+            }
+        }
     }
 
     private fun loadDataFromFirebase() {
-        val ref = FirebaseDatabase.getInstance().getReference("Lugares")
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("Lugares")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val newDestinations = mutableListOf<Destino>()
-                snapshot.children.mapNotNullTo(newDestinations) {
-                    it.getValue(Destino::class.java)?.copy(nombre = it.key)
-                }
+                val newDestinations = snapshot.children.mapNotNull { childSnapshot ->
+                    childSnapshot.getValue(Destino::class.java)?.copy(nombre = childSnapshot.key)
+                }.toMutableList()
                 adapter.updateDestinations(newDestinations)
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle possible errors
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
             }
         })
     }
+
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -71,7 +81,30 @@ class FiltroDistanciaActivity : AppCompatActivity(), LocationListener {
 
     override fun onLocationChanged(location: Location) {
         currentLocation = location
-        // Here you would typically notify the adapter to update distances based on the new location
+        filterDestinations(binding.sliderFiltroDistancia.value)
+    }
+
+    // Method to filter destinations based on the slider's value
+    private fun filterDestinations(maxDistance: Float) {
+        if (currentLocation == null) return
+
+        val filteredDestinations = adapter.destinations.filter { destino ->
+            val distance = calculateDistance(currentLocation!!, destino) / 1000 // Convert to kilometers
+            distance <= maxDistance
+        }
+        adapter.updateDestinations(filteredDestinations)
+    }
+
+    private fun calculateDistance(currentLocation: Location, destino: Destino): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            currentLocation.latitude,
+            currentLocation.longitude,
+            destino.Latitud ?: 0.0,
+            destino.Longitud ?: 0.0,
+            results
+        )
+        return results[0] // distance in meters
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

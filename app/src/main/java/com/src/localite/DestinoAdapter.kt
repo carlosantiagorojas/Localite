@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 
-class DestinoAdapter(private val destinations: MutableList<Destino>) : RecyclerView.Adapter<DestinoAdapter.ViewHolder>() {
+class DestinoAdapter(val destinations: MutableList<Destino>) : RecyclerView.Adapter<DestinoAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titulo: TextView = view.findViewById(R.id.titulo)
@@ -33,7 +33,8 @@ class DestinoAdapter(private val destinations: MutableList<Destino>) : RecyclerV
         holder.titulo.text = destino.nombre ?: "Nombre no disponible"
         holder.tag.text = destino.Tags.filterNotNull().joinToString(separator = ", ")
         holder.descripcion.text = destino.Descripcion ?: "Descripción no disponible"
-        // Distance setting logic would be added here if necessary
+        holder.distancia.text = holder.itemView.context.getString(R.string.distance_km, destino.calculatedDistance)
+
         val storageReference = FirebaseStorage.getInstance().reference.child("Lugares/${destino.nombre}/Principal.jpg")
         storageReference.downloadUrl.addOnSuccessListener { uri: Uri ->
             Glide.with(holder.itemView.context).load(uri).into(holder.imagenDestino)

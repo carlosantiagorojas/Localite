@@ -14,7 +14,8 @@ data class Destino(
     var Latitud: Double? = null,
     var Longitud: Double? = null,
     var Pais: String = "",
-    var Tags: List<String?> = listOf()
+    var Tags: List<String?> = listOf(),
+    var calculatedDistance: Double = 0.0  // Added property for distance calculation
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -30,7 +31,8 @@ data class Destino(
         Pais = parcel.readString() ?: "",
         Tags = mutableListOf<String?>().apply {
             parcel.readList(this, String::class.java.classLoader)
-        }
+        },
+        calculatedDistance = parcel.readDouble() // Read the distance value
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -45,6 +47,7 @@ data class Destino(
         parcel.writeValue(Longitud)
         parcel.writeString(Pais)
         parcel.writeList(Tags)
+        parcel.writeDouble(calculatedDistance)
     }
 
     override fun describeContents(): Int = 0

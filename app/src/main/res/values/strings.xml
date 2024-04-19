@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Localite</string>
+    <string name="distance_km">%.2f km</string>
 </resources>
