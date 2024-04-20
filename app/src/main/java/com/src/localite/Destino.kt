@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Destino(
-    val nombre: String? = null,
+    var nombre: String? = null,
     var Actividades: String = "",
     var Ciudad: String = "",
     var Descripcion: String = "",

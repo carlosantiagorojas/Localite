@@ -2,12 +2,14 @@ package com.src.localite
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
@@ -51,8 +53,16 @@ class DestinoAdapter(val destinations: MutableList<Destino>) : RecyclerView.Adap
     override fun getItemCount(): Int = destinations.size
 
     fun updateDestinations(newDestinations: List<Destino>) {
-        destinations.clear()
-        destinations.addAll(newDestinations)
-        notifyDataSetChanged()
+        if (newDestinations != destinations) { // Ensure new data is actually new
+            Log.d("RecyclerViewAdapter", "Updating destinations: ${newDestinations.size}")
+            val diffCallback = DestinoDiffCallback(destinations, newDestinations)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            destinations.clear()
+            destinations.addAll(newDestinations)
+            diffResult.dispatchUpdatesTo(this)
+        } else {
+            Log.d("RecyclerViewAdapter", "No change in destinations, no update dispatched.")
+        }
     }
+
 }
