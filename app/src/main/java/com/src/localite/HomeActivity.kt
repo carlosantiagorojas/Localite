@@ -171,8 +171,7 @@ class HomeActivity : AppCompatActivity(), LocationListener {
                 startActivity(intent)
             }
     }
-
-
+    
     private fun loadDataFromFirebase() {
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference("Lugares")
@@ -195,7 +194,6 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         })
 
     }
-
 
 
     private fun addCardToLayout(destino: Destino) {
@@ -236,12 +234,8 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             }
             startActivity(intent)
         }
-
-
-
         binding.container.addView(cardView)
     }
-
 
 
     private fun calcularDistancia(destino: Destino, textView: TextView) {
@@ -268,11 +262,6 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             textView.text = "Estás a $distance km"
         }
     }
-
-
-
-
-
 }
 
 
