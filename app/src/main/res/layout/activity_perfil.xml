@@ -132,14 +132,17 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginBottom="28dp"
-        android:backgroundTint="@color/blue_dark"
 
+        android:backgroundTint="@color/blue_dark"
         android:fontFamily="@font/roboto_bold"
         android:text="Modificar tus datos"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/CerrarSesion"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="105dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.47"
+        tools:ignore="MissingConstraints" />
 
     <include
         android:id="@+id/include_bottom_bar"
