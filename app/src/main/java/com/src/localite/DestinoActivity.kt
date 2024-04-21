@@ -1,8 +1,10 @@
 package com.src.localite
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +13,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.src.localite.databinding.ActivityDestinoBinding
-import com.src.localite.databinding.ActivityHomeBinding
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.recyclerview.widget.LinearLayoutManager
+
 
 class DestinoActivity : AppCompatActivity() {
 
@@ -22,6 +27,8 @@ class DestinoActivity : AppCompatActivity() {
         binding = ActivityDestinoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+
         val destino = intent.getParcelableExtra<Destino>("destino")
 
         binding.infoGeneral.text =  destino?.General
@@ -29,8 +36,6 @@ class DestinoActivity : AppCompatActivity() {
         binding.historiaUbicacion.text =  destino?.Historia
         binding.descripcion.text = destino?.Descripcion
         binding.titulo.text = destino?.Ciudad + ", " + destino?.Pais
-
-
 
         val storageReference = FirebaseStorage.getInstance().reference.child("Lugares/${destino?.nombre}/Secundaria.jpg")
         storageReference.downloadUrl.addOnSuccessListener { uri: Uri ->
@@ -45,6 +50,24 @@ class DestinoActivity : AppCompatActivity() {
             binding.imagenDestino.setImageResource(R.drawable.error_image)
         }
 
+        // Extract the list of suggestions from the "destino" object
+        val sugerencias = destino?.Sugeridas?.filterNotNull() ?: listOf()
+
+        // Print the size of the sugerencias list
+        Log.d(TAG, "Size of sugerencias list: ${sugerencias.size}")
+
+        // Set the LayoutManager for the RecyclerView
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+
+        // Create a RecyclerView Adapter to populate the RecyclerView
+        val adapter = SugerenciasAdapter(sugerencias)
+
+        // Set the LayoutManager for the RecyclerView
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+
+        // Set the adapter for the RecyclerView
+        binding.recyclerview.adapter = adapter
+
         // Configurar clics de botones
         binding.btnInfoGeneral.setOnClickListener {
             // Alternar la visibilidad del TextView infoGeneral
@@ -56,6 +79,8 @@ class DestinoActivity : AppCompatActivity() {
         }
 
         binding.btnHistoria.setOnClickListener {
+
+
             // Alternar la visibilidad del TextView historiaUbicacion
             binding.historiaUbicacion.visibility = if (binding.historiaUbicacion.visibility == View.VISIBLE) {
                 View.GONE
@@ -77,6 +102,27 @@ class DestinoActivity : AppCompatActivity() {
             } else {
                 View.VISIBLE
             }
+
+            // Toggle the visibility of the new button
+            binding.btnSugiereActividad.visibility = if (binding.btnSugiereActividad.visibility == View.VISIBLE) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+
+            // Toggle the visibility of the ListView
+            binding.recyclerview.visibility = if (binding.recyclerview.visibility == View.VISIBLE) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
+
+        binding.btnSugiereActividad.setOnClickListener {
+            val intent = Intent(this, SugerirActividadActivity::class.java).apply {
+                putExtra("destino", destino) // "destino" es la clave para acceder al objeto en la actividad de destino
+            }
+            startActivity(intent)
         }
 
         // Configurar clics de iconos de la barra inferior

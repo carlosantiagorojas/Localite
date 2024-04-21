@@ -14,6 +14,7 @@ data class Destino(
     var Latitud: Double? = null,
     var Longitud: Double? = null,
     var Pais: String = "",
+    var Sugeridas: List<String?> = listOf(),
     var Tags: List<String?> = listOf(),
     var calculatedDistance: Double = 0.0  // Added property for distance calculation
 ) : Parcelable {
@@ -29,6 +30,9 @@ data class Destino(
         Latitud = parcel.readValue(Double::class.java.classLoader) as? Double,
         Longitud = parcel.readValue(Double::class.java.classLoader) as? Double,
         Pais = parcel.readString() ?: "",
+        Sugeridas = mutableListOf<String?>().apply {
+            parcel.readList(this, String::class.java.classLoader)
+        },
         Tags = mutableListOf<String?>().apply {
             parcel.readList(this, String::class.java.classLoader)
         },
@@ -46,6 +50,7 @@ data class Destino(
         parcel.writeValue(Latitud)
         parcel.writeValue(Longitud)
         parcel.writeString(Pais)
+        parcel.writeList(Sugeridas)
         parcel.writeList(Tags)
         parcel.writeDouble(calculatedDistance)
     }

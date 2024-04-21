@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Localite"
         tools:targetApi="31">
         <activity
+            android:name=".SugerirActividadActivity"
+            android:exported="false" />
+        <activity
             android:name=".Alerts"
             android:exported="false" />
         <activity

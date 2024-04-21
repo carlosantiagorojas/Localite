@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DestinoActivity"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include_top_bar"
+        layout="@layout/destino_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/include_bottom_bar"
+        android:layout_below="@+id/include_top_bar">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ActivityContent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerInParent="true"
+            android:hint="Escribe la actividad que deseas sugerir"
+            android:inputType="textMultiLine"
+            android:layout_marginRight="31dp"
+            android:layout_marginLeft="31dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:fontFamily="@font/roboto_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="200dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSugiereActividad"
+            android:layout_width="200dp"
+            android:layout_height="55dp"
+            android:layout_below="@+id/ActivityContent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/orange_main"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Sugerir actividad"
+            android:textSize="18dp" />
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/include_bottom_bar"
+        layout="@layout/home_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
