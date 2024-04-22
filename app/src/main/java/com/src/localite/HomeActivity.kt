@@ -8,9 +8,12 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -48,6 +51,7 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         setupButtons()
         checkLocationPermission()
+        setupSearchView()
     }
 
     override fun onResume() {
@@ -80,6 +84,45 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10f, this)
 
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // You can handle the event when the user submits the search query here
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Log the query text
+                println("Query text: $newText")
+
+                // Filter the cards when the query text changes
+                filterCards(newText ?: "")
+                return false
+            }
+        })
+    }
+
+    private fun filterCards(query: String) {
+        println("Query text2: $query")
+        val childCount = binding.container.childCount
+        for (i in 0 until childCount) {
+            println("Iterating through child $i")
+            val cardView = binding.container.getChildAt(i) as? ViewGroup
+            val destino = cardView?.tag as? Destino
+            println("Destino1: $destino Query: $query")
+            if (destino != null) {
+                // show with a log
+                println("Destino2: ${destino.nombre} Query: $query")
+                // If the card's title contains the query, show the card, otherwise hide it
+                cardView.visibility = if (destino.nombre?.contains(query, ignoreCase = true) == true) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+        }
     }
 
     private fun checkLocationPermission(): Boolean {
@@ -208,7 +251,7 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             calcularDistancia(destino, direccion)
 
 
-
+        cardView.tag = destino
         titulo.text = destino.nombre ?: "Nombre no disponible"
         tag.text = destino.Tags.filterNotNull().joinToString(separator = ", ")
 
