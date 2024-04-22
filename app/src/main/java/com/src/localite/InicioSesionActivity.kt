@@ -28,11 +28,7 @@ class InicioSesionActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.IniciaSesion.setOnClickListener {
-            if (checkLocationPermission()) {
-                launchHomeActivity()
-            } else {
-                requestLocationPermission()
-            }
+            login()
         }
 
         binding.textoRegistro.setOnClickListener {
@@ -56,14 +52,18 @@ class InicioSesionActivity : AppCompatActivity() {
         )
     }
 
-    private fun login() {
+    private fun login(){
         if (validateFields())
             auth.signInWithEmailAndPassword(
                 binding.correoLogin.editText?.text.toString(),
                 binding.Contra.editText?.text.toString()
             ).addOnCompleteListener(this) { task ->
-                if (task.isSuccessful and checkLocationPermission()) {
-                    launchHomeActivity()
+                if (task.isSuccessful) {
+                    if (checkLocationPermission()) {
+                        launchHomeActivity()
+                    } else {
+                        requestLocationPermission()
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
                     val snackbar = task.exception?.localizedMessage?.let {

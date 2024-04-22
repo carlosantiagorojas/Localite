@@ -22,10 +22,10 @@ class RegistroActivity : AppCompatActivity() {
     private var alerts: Alerts = Alerts(this)
 
     var auth: FirebaseAuth = Firebase.auth
-    private var user: FirebaseUser = auth.currentUser!!
+    private var user: FirebaseUser? = null
     private val database = Firebase.database
     private val storage = Firebase.storage
-    private var refData = database.getReference("Usuarios/${user.uid}")
+    private var refData = database.getReference("Usuarios/${user?.uid}")
     private var refStore =
         storage.reference.child("Usuarios/${Firebase.auth.currentUser?.uid}/profile.jpg")
 
@@ -41,6 +41,7 @@ class RegistroActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = Firebase.auth
+        user = auth.currentUser
 
         binding.registrate.setOnClickListener() {
             signUp()
@@ -99,6 +100,12 @@ class RegistroActivity : AppCompatActivity() {
             return false
         } else binding.Contra.isErrorEnabled = false;
 
+        // Validate password
+        if (binding.ConfirmarContra.editText?.text.toString().isEmpty()) {
+            binding.ConfirmarContra.error = "Falta ingresar contraseña"
+            return false
+        } else binding.ConfirmarContra.isErrorEnabled = false;
+
         // Validate password confirmation
         if (binding.ConfirmarContra.editText?.text.toString() != binding.ConfirmarContra.editText?.text.toString()) {
             binding.ConfirmarContra.error = "No coinciden las contraseñas"
@@ -123,8 +130,8 @@ class RegistroActivity : AppCompatActivity() {
                     user = Firebase.auth.currentUser!!
 
                     // Update the DatabaseReference and StorageReference objects
-                    refData = database.getReference("Usuarios/${user.uid}")
-                    refStore = storage.reference.child("Usuarios/${user.uid}/profile.jpg")
+                    refData = database.getReference("Usuarios/${user!!.uid}")
+                    refStore = storage.reference.child("Usuarios/${user!!.uid}/profile.jpg")
 
                     currentUser = UserProfile(
                         binding.Usuario.editText?.text.toString(),
