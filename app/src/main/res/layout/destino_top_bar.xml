@@ -17,7 +17,7 @@
         android:layout_marginLeft="20dp"/>
 
     <TextView
-        android:id="@+id/tituloMonserrate"
+        android:id="@+id/titulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -29,7 +29,7 @@
         android:layout_marginBottom="25dp"
         android:layout_toEndOf="@+id/izquierda"
         android:fontFamily="@font/roboto_bold"
-        android:text="Cerro de Monserrate"
+        android:text=""
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
