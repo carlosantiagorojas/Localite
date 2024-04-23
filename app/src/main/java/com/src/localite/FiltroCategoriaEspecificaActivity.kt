@@ -1,6 +1,5 @@
 package com.src.localite
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -8,53 +7,50 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.src.localite.databinding.ActivityHomeBinding
-import com.google.firebase.database.FirebaseDatabase
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
-import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
+import com.src.localite.databinding.ActivityFiltroCategoriaEspecificaBinding
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class HomeActivity : AppCompatActivity(), LocationListener {
-    private lateinit var binding: ActivityHomeBinding
+class FiltroCategoriaEspecificaActivity : AppCompatActivity(), LocationListener {
+
+    private lateinit var binding: ActivityFiltroCategoriaEspecificaBinding
     private lateinit var locationManager: LocationManager
     private var currentLocation: Location? = null
-    private val RADIUS_OF_EARTH_KM = 6371
     private var informacionCargada = false
-
-    override fun onLocationChanged(location: Location) {
-        currentLocation = location
-        updateDistances()  // Actualiza distancias en las tarjetas
-
-    }
+    private var tagActual: String? = null
+    private val RADIUS_OF_EARTH_KM = 6371
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityFiltroCategoriaEspecificaBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        tagActual =  intent.getStringExtra("Categoria")
+        println("Tag actual $tagActual")
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+
         setupButtons()
         checkLocationPermission()
-        setupSearchView()
-    }
 
+
+    }
     override fun onResume() {
         super.onResume()
 
@@ -72,46 +68,6 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         }
 
     }
-
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // You can handle the event when the user submits the search query here
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Log the query text
-                println("Query text: $newText")
-
-                // Filter the cards when the query text changes
-                filterCards(newText ?: "")
-                return false
-            }
-        })
-    }
-
-    private fun filterCards(query: String) {
-        println("Query text2: $query")
-        val childCount = binding.container.childCount
-        for (i in 0 until childCount) {
-            println("Iterating through child $i")
-            val cardView = binding.container.getChildAt(i) as? ViewGroup
-            val destino = cardView?.tag as? Destino
-            println("Destino1: $destino Query: $query")
-            if (destino != null) {
-                // show with a log
-                println("Destino2: ${destino.nombre} Query: $query")
-                // If the card's title contains the query, show the card, otherwise hide it
-                cardView.visibility = if (destino.nombre?.contains(query, ignoreCase = true) == true) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-            }
-        }
-    }
-
     private fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), Datos.MY_PERMISSION_REQUEST_LOCATION)
@@ -143,7 +99,6 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             }
         }
     }
-
 
     private fun initializeLocationAndLoadData() {
         if (checkLocationPermission()) {
@@ -183,47 +138,6 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         locationManager.removeUpdates(this)
     }
 
-    private fun setupButtons() {
-
-            binding.includeBottomBar.accountIcon.setOnClickListener {
-                val intent = Intent(this, PerfilActivity::class.java)
-                startActivity(intent)
-            }
-
-            binding.btnCercanos.setOnClickListener {
-                val intent = Intent(this, FiltroDistanciaActivity::class.java)
-                startActivity(intent)
-            }
-
-            binding.btnCategorias.setOnClickListener {
-                val intent = Intent(this, FiltroCategoriaActivity::class.java)
-                startActivity(intent)
-            }
-    }
-    
-    private fun loadDataFromFirebase() {
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("Lugares")
-
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (lugarSnapshot in dataSnapshot.children) {
-                      val destino = lugarSnapshot.getValue<Destino>()?.copy(nombre = lugarSnapshot.key)  // Actualiza el nombre aquí
-                    if (destino != null) {
-                        addCardToLayout(destino)
-                    } else {
-                        println("Error al leer destino: ${lugarSnapshot.key}")
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("Error cargando datos: ${databaseError.message}")
-            }
-        })
-
-    }
-
 
     private fun addCardToLayout(destino: Destino) {
         val cardView = layoutInflater.inflate(R.layout.layout_card, binding.container, false)
@@ -234,10 +148,10 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         val imagenDestino = cardView.findViewById<ImageView>(R.id.imagenDestino)
         val btnDescubrir = cardView.findViewById<Button>(R.id.btnDescubrir)
         println("Localizacion en destino ${destino.Latitud} y ${destino.Longitud}")
-            calcularDistancia(destino, direccion)
+        calcularDistancia(destino, direccion)
 
 
-        cardView.tag = destino
+
         titulo.text = destino.nombre ?: "Nombre no disponible"
         tag.text = destino.Tags.filterNotNull().joinToString(separator = ", ")
 
@@ -266,6 +180,55 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         binding.container.addView(cardView)
     }
 
+    private fun setupButtons() {
+
+        binding.includeBottomBar.accountIcon.setOnClickListener {
+            val intent = Intent(this, PerfilActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.includeBottomBar.homeIcon.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.includeTopBar.Logo.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
+
+    private fun loadDataFromFirebase() {
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("Lugares")
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var encontrados = false // Variable para rastrear si se encontró algún destino correspondiente
+                for (lugarSnapshot in dataSnapshot.children) {
+                    val destino = lugarSnapshot.getValue<Destino>()?.copy(nombre = lugarSnapshot.key)
+                    val tagsSinNull = destino?.Tags?.filterNotNull() ?: emptyList()
+                    if (destino != null && tagsSinNull.contains(tagActual)) {
+                        encontrados = true // Se encontró al menos un destino correspondiente
+                        addCardToLayout(destino)
+                    } else {
+                        println("El destino no corresponde a la categoría: ${lugarSnapshot.key}")
+                    }
+                }
+                if (!encontrados) {
+                    binding.mensajeErrorTags.visibility = View.VISIBLE
+                } else {
+                    binding.mensajeErrorTags.visibility = View.GONE
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("Error cargando datos: ${databaseError.message}")
+            }
+        })
+    }
+
 
     private fun calcularDistancia(destino: Destino, textView: TextView) {
         val currentLat = currentLocation?.latitude
@@ -291,8 +254,10 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             textView.text = "Estás a $distance km"
         }
     }
+
+    override fun onLocationChanged(location: Location) {
+        currentLocation = location
+        updateDistances()  // Actualiza distancias en las tarjetas    }
+    }
+
 }
-
-
-
-

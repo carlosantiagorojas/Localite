@@ -30,37 +30,39 @@ class FiltroCategoriaActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //TESTING PURPOSES ONLY
-
-        //HONESTLY NO CLUE IF WE'RE GONNA IMPLEMENT LIKE THIS
-
         binding.cartaEventos.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
+            intent.putExtra("Categoria", "Eventos")
             startActivity(intent)
         }
 
         binding.cartaEntretenimiento.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
+            intent.putExtra("Categoria", "Entretenimiento")
             startActivity(intent)
         }
 
         binding.cartaGastronomia.setOnClickListener{
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
+            intent.putExtra("Categoria", "Gastronomia")
             startActivity(intent)
         }
 
         binding.cartaMercados.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("Categoria", "Mercados")
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
             startActivity(intent)
         }
 
         binding.cartaHistoricosYCulturales.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
+            intent.putExtra("Categoria", "Historicos y culturales")
             startActivity(intent)
         }
 
         binding.cartaNaturalezaYParques.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltroCategoriaEspecificaActivity::class.java)
+            intent.putExtra("Categoria", "Naturaleza y parques")
             startActivity(intent)
         }
     }
