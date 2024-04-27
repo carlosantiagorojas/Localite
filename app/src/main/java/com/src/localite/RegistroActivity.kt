@@ -5,7 +5,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import android.Manifest
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.ktx.auth
@@ -21,6 +23,8 @@ class RegistroActivity : AppCompatActivity() {
 
     private var alerts: Alerts = Alerts(this)
 
+    val PERM_GALERY_GROUP_CODE = 202
+    val REQUEST_PICK = 3
     var auth: FirebaseAuth = Firebase.auth
     private var user: FirebaseUser? = null
     private val database = Firebase.database
@@ -32,7 +36,6 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var currentUser: UserProfile
 
     private var outputPath: Uri? = null
-    private val REQUEST_PICK = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,23 +55,32 @@ class RegistroActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Aplicar permisos de galeria
+        // Reemplaza tu método de solicitud de permisos de galería existente con este
         binding.AddPhoto.setOnClickListener() {
-
-            PermissionsUtils.requestGalleryPermission(
-                this,
-                onPermissionGranted = {
-                    // Acciones cuando se concede el permiso
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
                     ImageCaptureUtils.startGallery(this)
-                },
-                onPermissionDenied = {
-                    // Acciones cuando se deniega el permiso
+                }
+
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
                     alerts.indefiniteSnackbar(
                         binding.root,
-                        "El permiso de la cámara es necesario para usar esta función 😭"
+                        "El permiso de Galeria es necesario para usar esta actividad 😭"
                     )
                 }
-            )
+
+                else -> {
+                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        permissions.plus(Manifest.permission.READ_MEDIA_IMAGES)
+                        permissions.plus(Manifest.permission.READ_MEDIA_VIDEO)
+                    }
+                    requestPermissions(permissions, PERM_GALERY_GROUP_CODE)
+                }
+            }
         }
     }
 
@@ -121,6 +133,14 @@ class RegistroActivity : AppCompatActivity() {
     // Sign up with email and password
     private fun signUp() {
         if (validateFields()) {
+            // Check if a photo has been selected
+            if (outputPath == null) {
+                alerts.shortSimpleSnackbar(
+                    binding.root,
+                    "Por favor selecciona una foto antes de registrarte"
+                )
+                return
+            }
             auth.createUserWithEmailAndPassword(
                 binding.Email.editText?.text.toString(),
                 binding.ConfirmarContra.editText?.text.toString()
@@ -136,7 +156,8 @@ class RegistroActivity : AppCompatActivity() {
                     currentUser = UserProfile(
                         binding.Usuario.editText?.text.toString(),
                         binding.Email.editText?.text.toString(),
-                        ""
+                        "",
+                        binding.Telefono.editText?.text.toString()
                     )
 
                     if (outputPath != null) {
@@ -202,18 +223,7 @@ class RegistroActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            PermissionsUtils.CAMERA_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ImageCaptureUtils.startCamera(this)
-                } else {
-                    alerts.shortSimpleSnackbar(
-                        binding.root,
-                        "Se denegó el permiso de la cámara 😭"
-                    )
-                }
-            }
-
-            PermissionsUtils.READ_EXTERNAL_STORAGE_PERMISSION -> {
+            PERM_GALERY_GROUP_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ImageCaptureUtils.startGallery(this)
                 } else {

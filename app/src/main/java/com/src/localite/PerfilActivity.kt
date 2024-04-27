@@ -8,13 +8,10 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.src.localite.Alerts
 import com.src.localite.databinding.ActivityPerfilBinding
-import com.src.localite.InicioSesionActivity
 
 class PerfilActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPerfilBinding
@@ -57,6 +54,7 @@ class PerfilActivity : AppCompatActivity() {
                 if (user != null) {
                     binding.username.text = user.name
                     binding.email.text = auth.currentUser?.email
+                    binding.telview.text = user.tel
                     currentUser = user
 
                     // Get the download URL and load the profile image using Glide
