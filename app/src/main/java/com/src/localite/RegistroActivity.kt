@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import android.Manifest
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.ktx.auth
@@ -20,29 +24,20 @@ import com.src.localite.ImageCaptureUtils.REQUEST_IMAGE_CAPTURE
 
 class RegistroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegistroBinding
-
-    private var alerts: Alerts = Alerts(this)
-
-    val PERM_GALERY_GROUP_CODE = 202
-    val REQUEST_PICK = 3
+    private val locationPermissionRequestCode = 1001
     var auth: FirebaseAuth = Firebase.auth
     private var user: FirebaseUser? = null
-    private val database = Firebase.database
-    private val storage = Firebase.storage
-    private var refData = database.getReference("Usuarios/${user?.uid}")
-    private var refStore =
-        storage.reference.child("Usuarios/${Firebase.auth.currentUser?.uid}/profile.jpg")
+    private var photoURI: Uri? = null
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
 
-    private lateinit var currentUser: UserProfile
 
-    private var outputPath: Uri? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegistroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Firebase Auth
         auth = Firebase.auth
         user = auth.currentUser
 
@@ -55,33 +50,22 @@ class RegistroActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Reemplaza tu método de solicitud de permisos de galería existente con este
-        binding.AddPhoto.setOnClickListener() {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    ImageCaptureUtils.startGallery(this)
-                }
-
-                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-                    alerts.indefiniteSnackbar(
-                        binding.root,
-                        "El permiso de Galeria es necesario para usar esta actividad 😭"
-                    )
-                }
-
-                else -> {
-                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                        permissions.plus(Manifest.permission.READ_MEDIA_IMAGES)
-                        permissions.plus(Manifest.permission.READ_MEDIA_VIDEO)
-                    }
-                    requestPermissions(permissions, PERM_GALERY_GROUP_CODE)
-                }
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                photoURI = uri
+                binding.AddPhoto.setImageURI(uri)
+                println("URI CORRECTO")
             }
+
+
         }
+
+        binding.AddPhoto.setOnClickListener {
+            // Intent explícito para seleccionar una imagen de la galería
+            imagePickerLauncher.launch("image/*")
+        }
+
+
     }
 
     private fun validateFields(): Boolean {
@@ -133,88 +117,76 @@ class RegistroActivity : AppCompatActivity() {
     // Sign up with email and password
     private fun signUp() {
         if (validateFields()) {
-            // Check if a photo has been selected
-            if (outputPath == null) {
-                alerts.shortSimpleSnackbar(
-                    binding.root,
-                    "Por favor selecciona una foto antes de registrarte"
-                )
-                return
-            }
-            auth.createUserWithEmailAndPassword(
-                binding.Email.editText?.text.toString(),
-                binding.ConfirmarContra.editText?.text.toString()
-            ).addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Update the FirebaseUser object
-                    user = Firebase.auth.currentUser!!
+            val name = binding.Usuario.editText?.text.toString()
+            val email = binding.Email.editText?.text.toString()
+            val phone = binding.Telefono.editText?.text.toString()
+            val password = binding.Contra.editText?.text.toString()
+            val confirmPassword = binding.ConfirmarContra.editText?.text.toString()
 
-                    // Update the DatabaseReference and StorageReference objects
-                    refData = database.getReference("Usuarios/${user!!.uid}")
-                    refStore = storage.reference.child("Usuarios/${user!!.uid}/profile.jpg")
+            if (password == confirmPassword) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            user = auth.currentUser
+                            val userId = user?.uid
+                            // Guarda los datos del usuario en la base de datos
+                            val database = Firebase.database
+                            val ref = database.getReference("Usuarios").child(userId!!)
+                            val userData = HashMap<String, Any>()
+                            userData["nombre"] = name
+                            userData["email"] = email
+                            userData["telefono"] = phone
+                            ref.setValue(userData)
+                                .addOnSuccessListener {
+                                    // Sube la foto a Firebase Storage
+                                    uploadProfilePhoto(userId)
 
-                    currentUser = UserProfile(
-                        binding.Usuario.editText?.text.toString(),
-                        binding.Email.editText?.text.toString(),
-                        "",
-                        binding.Telefono.editText?.text.toString()
-                    )
+                                    if (checkLocationPermission()) {
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        startActivity(intent)
+                                    } else {
+                                        requestLocationPermission()
+                                    }
 
-                    if (outputPath != null) {
-                        val uploadTask = refStore.putFile(outputPath!!)
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw it
                                 }
-                            }
-                            refStore.downloadUrl
-                        }.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val downloadUri = task.result
-
-                                // Update the photoUrl field of the UserProfile object
-                                currentUser.photoUrl = downloadUri.toString()
-
-                                // Save the UserProfile object to the Realtime Database
-                                refData.setValue(currentUser)
-                                    .addOnSuccessListener {
-                                        startActivity(Intent(this, HomeActivity::class.java))
-                                    }
-                                    .addOnFailureListener {
-                                        // Handle failure to save user data in the database
-                                        alerts.shortSimpleSnackbar(
-                                            binding.root,
-                                            "Error al guardar datos de usuario"
-                                        )
-                                    }
-                            } else {
-                                // Handle failure
-                                alerts.shortSimpleSnackbar(
-                                    binding.root,
-                                    "Error al subir imagen de perfil"
-                                )
-                            }
+                                .addOnFailureListener { e ->
+                                    Snackbar.make(binding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Snackbar.make(binding.root, "Error: ${task.exception?.message}", Snackbar.LENGTH_SHORT).show()
                         }
-                    } else {
-                        // User data saved without profile image
-                        startActivity(Intent(this, HomeActivity::class.java))
                     }
-                } else {
-                    // If account creation fails, show an error message
-                    val snackbar = task.exception?.localizedMessage?.let {
-                        Snackbar.make(
-                            binding.root,
-                            it, Snackbar.LENGTH_INDEFINITE
-                        )
-                    }
-                    snackbar?.setAction("Error al crear la cuenta") { snackbar?.dismiss() }
-                    snackbar?.show()
-                }
+            } else {
+                Snackbar.make(binding.root, "Las contraseñas no coinciden", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
 
+    private fun uploadProfilePhoto(userId: String) {
+        photoURI?.let { uri ->
+            val storageRef = Firebase.storage.reference.child("Usuarios/$userId/profile")
+
+            storageRef.putFile(uri)
+                .addOnSuccessListener {
+                    // Limpiar campos después de la carga exitosa de la foto
+                    clearFields()
+                }
+                .addOnFailureListener { e ->
+                    println("No funciono la carga de la foto del usuario")
+                }
+        } ?: run {
+            println("URI de foto nula")
+        }
+    }
+
+    private fun clearFields() {
+        binding.Usuario.editText?.setText("")
+        binding.Email.editText?.setText("")
+        binding.Telefono.editText?.setText("")
+        binding.Contra.editText?.setText("")
+        binding.ConfirmarContra.editText?.setText("")
+        binding.AddPhoto.setImageResource(R.drawable.blank_profile_picture)
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -222,40 +194,39 @@ class RegistroActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERM_GALERY_GROUP_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ImageCaptureUtils.startGallery(this)
-                } else {
-                    alerts.shortSimpleSnackbar(
-                        binding.root,
-                        "Se denegó el permiso a la galeria 😭"
-                    )
-                }
+        if (requestCode == locationPermissionRequestCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Permiso de ubicación requerido",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
             }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            Glide.with(this)
-                .clear(binding.AddPhoto)
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    alerts.shortSimpleSnackbar(binding.root, "Foto tomada correctamente")
-                    outputPath = data?.data
-                }
-
-                REQUEST_PICK -> {
-                    alerts.shortSimpleSnackbar(binding.root, "Imagen seleccionada correctamente")
-                    outputPath = data?.data
-                }
-            }
-            Glide.with(this)
-                .load(outputPath)
-                .centerCrop()
-                .into(binding.AddPhoto)
-        }
+    private fun checkLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            locationPermissionRequestCode
+        )
+    }
+
+
+
+
 }

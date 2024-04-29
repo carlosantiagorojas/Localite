@@ -8,7 +8,12 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.src.localite.databinding.ActivityPerfilBinding
@@ -22,12 +27,19 @@ class PerfilActivity : AppCompatActivity() {
     private val storage = Firebase.storage
     private val refData = database.getReference("Usuarios/${user.uid}")
     private val refStore = storage.reference.child("Usuarios/${Firebase.auth.currentUser?.uid}/profile.jpg")
-    private lateinit var currentUser: UserProfile
+    private lateinit var currentUser: FirebaseUser
+    private lateinit var profileImageUrl: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        currentUser = auth.currentUser!!
+
+
+        loadDataFromFirebase()
 
         binding.includeBottomBar.homeIcon.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
@@ -43,36 +55,55 @@ class PerfilActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
     }
 
-    override fun onResume() {
-        super.onResume()
-        val alerts = Alerts(this)
-        refData.get().addOnSuccessListener { data ->
-            if (data.exists()) {
-                val user = data.getValue(UserProfile::class.java)
-                if (user != null) {
-                    binding.username.text = user.name
-                    binding.email.text = auth.currentUser?.email
-                    binding.telview.text = user.tel
-                    currentUser = user
+    private fun loadDataFromFirebase() {
+        println("Usuario actual ${currentUser.email}")
+        val userId = auth.currentUser?.uid
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("Usuarios")
 
-                    // Get the download URL and load the profile image using Glide
-                    refStore.downloadUrl.addOnSuccessListener { uri ->
-                        Glide.with(this)
-                            .load(uri as Uri)
-                            .centerCrop()
-                            .placeholder(R.drawable.baseline_image_24)
-                            .into(binding.profileImage)
-                    }.addOnFailureListener {
-                        alerts.longToast("Error al cargar imagen de perfil")
-                    }
-                } else {
-                    alerts.longToast("Error al cargar datos de usuario")
+        ref.child(userId!!).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val nombre = dataSnapshot.child("nombre").value.toString()
+                    val telefono = dataSnapshot.child("telefono").value.toString()
+
+                    // Actualizar las vistas con los datos obtenidos
+                    binding.username.text = nombre
+                    println("User $nombre")
+                    binding.telview.text = telefono
+                    println("tel $telefono")
+                    binding.email.text = currentUser.email
+                    println("email ${currentUser.email}")
+
+                    loadProfileImage(userId)
+
                 }
-            } else {
-                alerts.longToast("Error al cargar datos de usuario")
             }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("Error cargando datos: ${databaseError.message}")
+            }
+        })
+    }
+
+    private fun loadProfileImage(userId: String) {
+        val profileRef = storage.reference.child("Usuarios").child(userId).child("profile")
+
+        profileRef.downloadUrl.addOnSuccessListener { uri ->
+            profileImageUrl = uri.toString()
+
+            // Cargar la imagen usando Glide
+            Glide.with(this)
+                .load(profileImageUrl)
+                .placeholder(R.drawable.load_image)
+                .into(binding.profileImage)
+        }.addOnFailureListener {
+            // Manejar errores al cargar la imagen
         }
     }
+
+
 }
