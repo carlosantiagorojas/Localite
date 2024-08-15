@@ -12,3 +12,8 @@ Aplicación movil para turistias que visitan lugares de interés y buscan comple
 - Filtros y especificaciones iniciales: Los usuarios pueden personalizar su búsqueda según sus preferencias utilizando filtros como categoría y ubicación.
 - Detalles en páginas de destino: Los usuarios acceden a páginas detalladas sobre cada lugar, que incluyen información histórica y recomendaciones de actividades que hace el destino.
 - Comunidad integrada: Los usuarios pueden compartir recomendaciones con otros viajeros sobre que actividades realizar.
+
+## Authors
+- [@pescobarg](https://github.com/pescobarg)
+- [@KJAIMESC](https://github.com/KJAIMESC)
+- [@carlosantiagorojas](https://github.com/carlosantiagorojas)
